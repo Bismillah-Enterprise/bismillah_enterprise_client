@@ -41,7 +41,7 @@ const UserRequest = () => {
             uid
         };
 
-        fetch('http://localhost:5000/staff', {
+        fetch('https://bismillah-enterprise-server.onrender.com/staff', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'
@@ -59,7 +59,7 @@ const UserRequest = () => {
                 return text ? JSON.parse(text) : null;
             })
             .then(() => {
-                fetch(`http://localhost:5000/user_request/${id}`, {
+                fetch(`https://bismillah-enterprise-server.onrender.com/user_request/${id}`, {
                     method: 'DELETE'
                 })
                     .then(() => {
@@ -92,7 +92,7 @@ const UserRequest = () => {
             confirmButtonText: "Yes, reject it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`http://localhost:5000/user_request/${id}`, {
+                fetch(`https://bismillah-enterprise-server.onrender.com/user_request/${id}`, {
                     method: 'DELETE'
                 }).then(res => res.json())
                 Swal.fire({

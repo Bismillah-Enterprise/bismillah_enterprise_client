@@ -1,35 +1,37 @@
 import { useContext, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '../Provider/AuthProvider';
+import Loading from '../Loading/Loading';
 
 const AdminRoute = ({ children }) => {
-    const { user, loading } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
     const [isAdmin, setIsAdmin] = useState(null);
-    const [checking, setChecking] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (!user) return;
-
-        // ✅ Only run this if user is available
-        fetch(`http://localhost:5000/staff/uid_query/${user.uid}`)
+        setLoading(true);
+        fetch(`https://bismillah-enterprise-server.onrender.com/staff/uid_query/${user?.uid}`)
             .then(res => res.json())
             .then(data => {
                 if (data && data.user_category === 'admin') {
                     setIsAdmin(true);
+                    setLoading(false);
                 } else {
                     setIsAdmin(false);
+                    setLoading(false);
                 }
-                setChecking(false);
+                
             })
             .catch(() => {
                 setIsAdmin(false);
-                setChecking(false);
+                setLoading(false);
             });
-    }, [user]); // ✅ depend on `user`, not `isAdmin`
+    }, [user]);
 
     // ⏳ Still checking or auth not ready
-    if (loading || checking) {
-        return <div className="text-center text-pink-500 mt-10">⏳ Checking Admin Access...</div>;
+    if (loading) {
+        return <Loading></Loading>;
     }
 
     // 🚫 Not logged in or not admin

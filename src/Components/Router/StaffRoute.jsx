@@ -1,32 +1,35 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../Provider/AuthProvider';
+import Loading from '../Loading/Loading';
+import { Navigate } from 'react-router-dom';
 
-const StaffRoute = ({children}) => {
+const StaffRoute = ({ children }) => {
 
-	const { user, loading } = useContext(AuthContext);
+	const { user } = useContext(AuthContext);
 	const [isStaff, setIsStaff] = useState(null);
-	const [checking, setChecking] = useState(true);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		fetch(`http://localhost:5000/staff/uid_query/${user.uid}`)
+		setLoading(true);
+		fetch(`https://bismillah-enterprise-server.onrender.com/staff/uid_query/${user?.uid}`)
 			.then(res => res.json())
 			.then(data => {
 				if (data?.message?.message !== 'UID not find') {
-					console.log(data)
 					setIsStaff(true);
+					setLoading(false);
 				} else {
 					setIsStaff(false);
+					setLoading(false)
 				}
-				setChecking(false);
 			})
 			.catch(() => {
 				setIsStaff(false);
-				setChecking(false);
+				setLoading(false);
 			});
 	}, [user]);
 
-	if (loading || checking) {
-		return <div className="text-center text-pink-500 mt-10">⏳ Checking Admin Access...</div>;
+	if (loading) {
+		return <Loading></Loading>;
 	}
 
 	if (!user || !isStaff) {

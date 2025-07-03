@@ -5,7 +5,7 @@ const useGetUser = () => {
 	const {user} = useContext(AuthContext);
 	const [currentUser, setCurrentUser] = useState();
 	useEffect(() => {
-		fetch(`http://localhost:5000/staff/uid_query/${user.uid}`)
+		fetch(`https://bismillah-enterprise-server.onrender.com/staff/uid_query/${user.uid}`)
 			.then(res => res.json())
 			.then(data => {
 				setCurrentUser(data)

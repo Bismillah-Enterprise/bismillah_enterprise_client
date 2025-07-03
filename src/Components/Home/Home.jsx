@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../Provider/AuthProvider';
+import Loading from '../Loading/Loading';
 
 const Home = () => {
+    const {loading} = useContext(AuthContext);
+    if(loading) {
+        return <Loading></Loading>
+    }
     return (
         <div className='text-white'>
             <div className='flex flex-col items-center justify-center w-full min-h-[85vh] pb-[100px]'>

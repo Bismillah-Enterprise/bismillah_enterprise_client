@@ -22,7 +22,7 @@ const User_IP = () => {
         console.log(_id)
         console.log(updatedWifiIp)
 
-        fetch(`http://localhost:5000/set_ip/${_id}`, {
+        fetch(`https://bismillah-enterprise-server.onrender.com/set_ip/${_id}`, {
             method: 'PUT',
             headers: {
                 'content-type': 'application/json'

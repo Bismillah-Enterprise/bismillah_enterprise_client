@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import Clock from '../Clock/Clock';
 import useGetWifiIp from '../Hooks/useGetWifiIp';
 import useIsAdmin from '../Hooks/useIsAdmin';
+import Loading from '../Loading/Loading';
 
 
 const Staff = () => {
@@ -12,20 +13,24 @@ const Staff = () => {
     const staff = useLoaderData();
     const { _id, name, hour_rate, today_enter1_time, today_exit1_time, today_enter2_time, today_exit2_time, message } = staff[0];
     const [isAllowed, setIsAllowed] = useState(false);
-    const [wifiIp] = useGetWifiIp();
+    const [wifiIp, wifiLoading] = useGetWifiIp();
     const [isAdmin] = useIsAdmin();
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         if (!wifiIp) return;
-        fetch('http://localhost:5000/set_ip')
+        setLoading(true);
+        fetch('https://bismillah-enterprise-server.onrender.com/set_ip')
         .then(res => res.json())
         .then(data => {
                 console.log({'gotit': data[0].wifi_ip, 'current': wifiIp})
                 if(data[0].wifi_ip == wifiIp) {
                     console.log('ip matched')
                     setIsAllowed(true);
+                    setLoading(false);
                 }
                 else{
                     setIsAllowed(false);
+                    setLoading(false)
                 }
             })
     }, [wifiIp])
@@ -65,7 +70,7 @@ const Staff = () => {
 
     //     const timerId = setTimeout(() => {
     //         // Call the server to reset data
-    //         fetch(`http://localhost:5000/reset_time/${_id}`, {
+    //         fetch(`https://bismillah-enterprise-server.onrender.com/reset_time/${_id}`, {
     //             method: 'PUT',
     //             headers: {
     //                 'Content-Type': 'application/json'
@@ -83,7 +88,7 @@ const Staff = () => {
 
     //         // Optional: setup for the next day (repeat every 24h)
     //         const intervalId = setInterval(() => {
-    //             fetch(`http://localhost:5000/reset_time/${_id}`, {
+    //             fetch(`https://bismillah-enterprise-server.onrender.com/reset_time/${_id}`, {
     //                 method: 'PUT',
     //                 headers: {
     //                     'Content-Type': 'application/json'
@@ -103,8 +108,8 @@ const Staff = () => {
 
     const handleTodayTime = (name, id) => {
         const updatedTime = { name, clickedTime: Time }
-        console.log(updatedTime)
-        fetch(`http://localhost:5000/staffs_daily_time/${id}`, {
+        setLoading(true)
+        fetch(`https://bismillah-enterprise-server.onrender.com/staffs_daily_time/${id}`, {
             method: 'PUT',
             headers: {
                 'content-type': 'application/json'
@@ -113,7 +118,7 @@ const Staff = () => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
+                setLoading(false);
                 Swal.fire({
                     position: "center",
                     icon: "success",
@@ -123,6 +128,9 @@ const Staff = () => {
                 });
                 location.reload();
             })
+    }
+    if(loading && wifiLoading) {
+        <Loading></Loading>
     }
     return (
         <div>

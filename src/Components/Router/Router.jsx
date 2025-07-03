@@ -18,6 +18,7 @@ import NotAuthorized from "../NotAuthorized/NotAuthorized";
 import AdminRoute from "./AdminRoute";
 import StaffRoute from "./StaffRoute";
 import ShopCode from "../ShopCode/ShopCode";
+import Loading from "../Loading/Loading";
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,7 @@ const router = createBrowserRouter([
       {
         path: "/staff/:id",
         element: <StaffRoute><Staff></Staff></StaffRoute>,
-        loader: ({ params }) => fetch(`http://localhost:5000/staff/${params.id}`)
+        loader: ({ params }) => fetch(`https://bismillah-enterprise-server.onrender.com/staff/${params.id}`)
       },
 
       {
@@ -41,7 +42,7 @@ const router = createBrowserRouter([
       {
         path: "/admin",
         element: <AdminRoute><Admin></Admin></AdminRoute>,
-        loader: () => fetch('http://localhost:5000/staffs'),
+        loader: () => fetch('https://bismillah-enterprise-server.onrender.com/staffs'),
         children: [
           {
             path: "/admin",
@@ -58,7 +59,7 @@ const router = createBrowserRouter([
           {
             path: "/admin/user_request",
             element: <AdminRoute><UserRequest></UserRequest></AdminRoute>,
-            loader: () => fetch('http://localhost:5000/user_request')
+            loader: () => fetch('https://bismillah-enterprise-server.onrender.com/user_request')
           },
           {
             path: "/admin/user_account_manipulation",
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
       {
         path: '/not_authorized',
         element: <NotAuthorized></NotAuthorized>
+      },
+      {
+        path: '/loading',
+        element: <Loading></Loading>
       }
     ]
   },

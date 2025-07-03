@@ -5,7 +5,7 @@ const useIsAdmin = () => {
 	const { user } = useContext(AuthContext);
 	const [isAdmin, setIsAdmin] = useState(false);
 	useEffect(() => {
-		fetch(`http://localhost:5000/staff/uid_query/${user?.uid}`)
+		fetch(`https://bismillah-enterprise-server.onrender.com/staff/uid_query/${user?.uid}`)
 			.then(res => res.json())
 			.then(data => {
 				console.log(data)

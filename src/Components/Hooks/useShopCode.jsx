@@ -5,17 +5,19 @@ import useRefetch from './useRefetch';
 const useShopCode = () => {
 	const {user} = useContext(AuthContext)
 	const [shopCode, setShopCode] = useState();
-	const [refetch, setRefetch] = useRefetch();
+	const [codeLoading, setCodeLoading] = useState(false);
 	useEffect(() => {
-		fetch(`http://localhost:5000/shop_code/${import.meta.env.VITE_shop_coce_object_id}`)
+		setCodeLoading(true)
+		fetch(`https://bismillah-enterprise-server.onrender.com/shop_code/${import.meta.env.VITE_shop_coce_object_id}`)
 			.then(res => res.json())
 			.then(data => {
 				console.log(data);
-				setShopCode(data[0].shop_code)
+				setShopCode(data[0].shop_code);
+				setCodeLoading(false);
 			})
-	}, [user, refetch]);
+	}, [user]);
 
-	return [shopCode]
+	return [shopCode, codeLoading]
 };
 
 export default useShopCode;

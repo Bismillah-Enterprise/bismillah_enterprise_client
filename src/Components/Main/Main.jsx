@@ -6,31 +6,30 @@ import Swal from 'sweetalert2';
 import useGetUser from '../Hooks/useGetUser';
 import useIsAdmin from '../Hooks/useIsAdmin';
 import useShopCode from '../Hooks/useShopCode';
+import Loading from '../Loading/Loading';
 
 const Main = () => {
     const [modal, setModal] = useState(false);
     const [staff, setStaff] = useState({});
     const [isAdmin] = useIsAdmin();
-    const [shopCode] = useShopCode();
+    const [shopCode, codeLoading] = useShopCode();
 
-    const { user, googleSignIn, logOut } = useContext(AuthContext);
+    const { user, googleSignIn, logOut, loading, setLoading } = useContext(AuthContext);
     const location = useLocation();
     useEffect(() => {
         if (!user?.email) return;
-
-        fetch('http://localhost:5000/staffs')
+        setLoading(true);
+        fetch('https://bismillah-enterprise-server.onrender.com/staffs')
             .then(res => res.json())
             .then(data => {
                 const findCurrentUser = data.filter(currentUser => currentUser.email === user.email);
                 console.log(findCurrentUser[0])
                 if (findCurrentUser && findCurrentUser.length > 0) {
                     setStaff(findCurrentUser[0]);
+                    setLoading(false)
                 }
             });
     }, [user]);
-    // if (Object.keys(staff).length === 0) {
-    //     return <div className="text-center mt-10 text-pink-400">⏳ Loading profile...</div>;
-    // }
 
 
     const handleGoogleLogin = () => {
@@ -45,13 +44,14 @@ const Main = () => {
                     const display_name = result?.user?.displayName;
                     const photo = result?.user?.photoURL
                     setModal(!modal);
-
+                    setLoading(true)
                     // 1️⃣ First check if the user is in the staff list
-                    fetch(`http://localhost:5000/staff/uid_query/${uid}`)
+                    fetch(`https://bismillah-enterprise-server.onrender.com/staff/uid_query/${uid}`)
                         .then(res => res.json())
                         .then(staffData => {
                             console.log(staffData)
                             if (staffData?.uid === uid) {
+                                setLoading(false)
                                 Swal.fire({
                                     position: "center",
                                     icon: "success",
@@ -61,7 +61,8 @@ const Main = () => {
                                 });
                             } else {
                                 // 2️⃣ Check if user request already exists
-                                fetch(`http://localhost:5000/user_request_uid/${uid}`)
+                                setLoading(true);
+                                fetch(`https://bismillah-enterprise-server.onrender.com/user_request_uid/${uid}`)
                                     .then(async res => {
                                         if (!res.ok) {
                                             // request failed (e.g. 404 or 500)
@@ -74,10 +75,12 @@ const Main = () => {
                                     })
                                     .then(userRequest => {
                                         if (userRequest) {
+                                            setLoading(false);
                                             console.log("ℹ️ User request already exists:", userRequest);
                                         } else {
                                             // 3️⃣ Insert new request
-                                            fetch(`http://localhost:5000/user_request`, {
+                                            setLoading(true);
+                                            fetch(`https://bismillah-enterprise-server.onrender.com/user_request`, {
                                                 method: 'POST',
                                                 headers: {
                                                     'content-type': 'application/json'
@@ -87,6 +90,7 @@ const Main = () => {
                                                 .then(res => res.json())
                                                 .then(data => {
                                                     console.log("📩 New request submitted:", data);
+                                                    setLoading(false)
                                                     Swal.fire({
                                                         position: "center",
                                                         icon: "success",
@@ -115,6 +119,10 @@ const Main = () => {
     const handleLogOut = () => {
         logOut()
         location.reload();
+    }
+
+    if (loading) {
+        return <div className='h-[100vh]'><Loading></Loading></div>
     }
 
     return (

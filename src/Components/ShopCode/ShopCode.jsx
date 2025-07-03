@@ -19,7 +19,7 @@ const ShopCode = () => {
 		const shop_code = new_shop_code.value;
 		const newShopCode = { shop_code };
 		const _id = import.meta.env.VITE_shop_coce_object_id;
-		fetch(`http://localhost:5000/shop_code/${_id}`, {
+		fetch(`https://bismillah-enterprise-server.onrender.com/shop_code/${_id}`, {
 			method: 'PUT',
 			headers: {
 				'content-type': 'application/json'

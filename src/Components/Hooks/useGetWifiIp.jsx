@@ -2,15 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 
 const useGetWifiIp = () => {
 	const [wifiIp, setWifiIp] = useState(null);
+	const [wifiLoading, setwifiLoading] = useState(false);
 	useEffect(() => {
-		fetch('http://localhost:5000/get_network_ip')
+		setwifiLoading(true);
+		fetch('https://bismillah-enterprise-server.onrender.com/get_network_ip')
 			.then(res => res.json())
 			.then(data => {
 				setWifiIp(data.ip);
+				setwifiLoading(false);
 			})
 	}, [])
 
-	return [wifiIp]
+	return [wifiIp, wifiLoading]
 };
 
 export default useGetWifiIp;
